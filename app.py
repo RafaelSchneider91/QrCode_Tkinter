@@ -135,7 +135,7 @@ pos_y = 35
 
 fontsize = 50  # starting font size
 font = ImageFont.truetype("arial.ttf", fontsize)
-im2 = Image.open('moldura.png')
+im2 = Image.open('imagens/moldura.png')
 
 # estilo dos cantos 
 def style_eyes(img):
@@ -163,7 +163,7 @@ def criar_qr(estacao):
     qr_img = qr.make_image(image_factory=StyledPilImage,
                         eye_drawer=RoundedModuleDrawer(radius_ratio=1.5),
                         color_mask=SolidFillColorMask(front_color=verde),
-                        embeded_image_path="oee_logo.jpg"
+                        embeded_image_path="imagens/oee_logo.jpg"
                             )
 
     mask = style_eyes(qr_img)
@@ -185,7 +185,7 @@ def executar():
         for estacao in listaestacoes:
             final_img = criar_qr(estacao)
             local_arquivo_salvo = "C:/Users/Public/Downloads"
-            im2 = Image.open('moldura.png')
+            im2 = Image.open('imagens/moldura.png')
             mold = criar_moldura(estacao, im2)
 
             Image.Image.paste(mold, final_img, (pos_y, pos_x))
@@ -203,8 +203,6 @@ def executar():
     else:
         messagebox.showwarning(title="Atenção", message="Nenhum evento criado, adicione os centros de trabalho!")
     
-
- 
 
 img_btn_executar = PhotoImage(file="imagens\\btn_executar.png")
 # btn_executar = Button(app, bd=2, image=img_btn_executar, command=lambda: valBarra(100000))
