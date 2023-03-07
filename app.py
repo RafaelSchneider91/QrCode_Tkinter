@@ -53,7 +53,7 @@ vnovoestacao = Entry(app, bd=2, justify=CENTER)
 vnovoestacao.place(width=100
                    , height=25
                    , x=325
-                   , y=30)
+                   , y=15)
 
 def addestacao():
         
@@ -73,7 +73,7 @@ btn_estacoes = Button(app, text="Incluir Estação", command=addestacao)
 btn_estacoes.place(width=100
                    , height=25
                    , x=325
-                   , y=60)
+                   , y=45)
 
 lb_estacoes = Listbox(app, bd=2, justify=CENTER )
 
@@ -87,9 +87,9 @@ for estacao in listaestacoes:
 # lb_estacoes.pack()
 
 lb_estacoes.place(width=100
-                   , height=150
+                   , height=170
                    , x=325
-                   , y=100)
+                   , y=80)
 
 
 
@@ -179,9 +179,6 @@ def criar_moldura(estacao, mold):
     return mold
 
 
-varBarra = 0
-
-
 def executar():
     iteracao = 0
     if len(listaestacoes) > 0:
@@ -195,12 +192,10 @@ def executar():
             mold.save(f'{local_arquivo_salvo}/qr_code_{estacao}.png')
             iteracao = iteracao + 1
 
-            global varBarra
-            varBarra = DoubleVar()
-            varBarra.set(int((iteracao/len(listaestacoes))*100))
-
-            # https://www.youtube.com/watch?v=chGCliVDYgU
-            # incluir o bar progress
+            percentual = int((iteracao/len(listaestacoes))*100)
+            # print(percentual)
+            varBarra.set(percentual)
+            app.update()
 
         messagebox.showinfo(title="Iteração", message=f"Total de arquivos gerados: {iteracao}")
         messagebox.showinfo(title="Informação", message=f"Salvo em: {local_arquivo_salvo}")
@@ -208,26 +203,25 @@ def executar():
     else:
         messagebox.showwarning(title="Atenção", message="Nenhum evento criado, adicione os centros de trabalho!")
     
-    
+
+ 
 
 img_btn_executar = PhotoImage(file="imagens\\btn_executar.png")
+# btn_executar = Button(app, bd=2, image=img_btn_executar, command=lambda: valBarra(100000))
 btn_executar = Button(app, bd=2, image=img_btn_executar, command=executar)
+
 btn_executar.place(width=150
                    , height=40
                    , x=300
                    , y=320)
 
-
-# Cria a barra de progresso
+varBarra=DoubleVar()
+varBarra.set(0)
 
 progress = ttk.Progressbar(app, orient="horizontal", variable=varBarra, maximum=100)
 progress.place(width=150
                    , height=25
                    , x=300
                    , y=370)
-
-
-
-    
 
 app.mainloop()
