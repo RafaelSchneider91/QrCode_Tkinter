@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import filedialog
 from PIL import ImageTk, Image, ImageDraw, ImageFont
 import qrcode
 from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
@@ -180,16 +181,21 @@ def criar_moldura(estacao, mold):
 
 
 def executar():
+    # Abre um diálogo de diretório
+    diretorio = filedialog.askdirectory()
+
+    print(diretorio)
+
     iteracao = 0
     if len(listaestacoes) > 0:
         for estacao in listaestacoes:
             final_img = criar_qr(estacao)
-            local_arquivo_salvo = "C:/Users/Public/Downloads"
+            # local_arquivo_salvo = diretorio
             im2 = Image.open('imagens/moldura.png')
             mold = criar_moldura(estacao, im2)
 
             Image.Image.paste(mold, final_img, (pos_y, pos_x))
-            mold.save(f'{local_arquivo_salvo}/qr_code_{estacao}.png')
+            mold.save(f'{diretorio}/qr_code_{estacao}.png')
             iteracao = iteracao + 1
 
             percentual = int((iteracao/len(listaestacoes))*100)
@@ -197,8 +203,9 @@ def executar():
             varBarra.set(percentual)
             app.update()
 
+
         messagebox.showinfo(title="Iteração", message=f"Total de arquivos gerados: {iteracao}")
-        messagebox.showinfo(title="Informação", message=f"Salvo em: {local_arquivo_salvo}")
+        # messagebox.showinfo(title="Informação", message=f"Salvo em: {local_arquivo_salvo}")
 
     else:
         messagebox.showwarning(title="Atenção", message="Nenhum evento criado, adicione os centros de trabalho!")
