@@ -9,26 +9,18 @@ from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
 from qrcode.image.styles.moduledrawers import CircleModuleDrawer
 from  qrcode.image.styles.colormasks import SolidFillColorMask
 from qrcode.image.styledpil import StyledPilImage
-import os
 import base64
 import io
+import re
 
 app = Tk()
-
+#Titulo Janela
+app.title("QRCode OEE")
 # Cria um objeto de estilo ttk
 estilo = ttk.Style()
 
-# Configura as cores do tema personalizado
-estilo.configure('TButton', 
-                 background='#EE6611'
-                #  foreground='#444242'
-                 )
-
 img_base64_moldura = "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"
 
-
-app.title("Cria QRCode OEE")
-# app.iconbitmap(default="imagens\\icone.ico")
 app.resizable(width=1, height=1)
 
 largura_janela = 500
@@ -45,30 +37,34 @@ app.geometry(f"{largura_janela}x{altura_janela}+{posicao_x}+{posicao_y}")
 app.wm_maxsize(500, 400)
 app.wm_maxsize(500, 400)
 
-# img_fundo = PhotoImage(file="background.png")
+img_fundo_base64 = "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"
+
+# image_fundo.show()
+img_fundo = PhotoImage(data=base64.b64decode(img_fundo_base64))
 # img_btn_executar = PhotoImage(file="btn_executar.png")
 
-# label_fundo = Label(app, image=img_fundo)
-# label_fundo.pack()
+label_fundo = Label(app, image=img_fundo)
+label_fundo.pack()
 
 listaestacoes = []
 
 vnovoestacao = Entry(app, bd=2, justify=CENTER)
 vnovoestacao.place(width=100
                    , height=25
-                   , x=200
+                   , x=325
                    , y=15)
 
 def addestacao():
-        
-    if len(vnovoestacao.get()) == 8 and vnovoestacao.get() not in listaestacoes:
+    
+    validar = vnovoestacao.get()
+    padrao = re.compile(r"^\d{3}-\d{4}$")
+    if padrao.match(validar):
         lb_estacoes.insert(END, vnovoestacao.get())
         listaestacoes.append(vnovoestacao.get())
-        print(listaestacoes)
-    elif len(vnovoestacao.get()) == 8 and vnovoestacao.get() in listaestacoes:
-        messagebox.showerror(title="Erro", message="O centro de trabalho ja foi adicionado!")
+        print("O número de centro trabalho é válido.")
     else:
-        messagebox.showerror(title="Erro", message="Adicionar um centro de trabalho com 8 caracteres!")
+        messagebox.showerror(title="Erro", message="O formato digitado é invalido! Exemplo:'123-1234'")
+        print("O número de centro trabalho é inválido.")
  
 
 btn_estacoes = Button(app, text="Incluir Estação", command=addestacao)
@@ -76,7 +72,7 @@ btn_estacoes = Button(app, text="Incluir Estação", command=addestacao)
 
 btn_estacoes.place(width=100
                    , height=25
-                   , x=200
+                   , x=325
                    , y=45)
 
 lb_estacoes = Listbox(app, bd=2, justify=CENTER )
@@ -92,7 +88,7 @@ for estacao in listaestacoes:
 
 lb_estacoes.place(width=100
                    , height=170
-                   , x=200
+                   , x=325
                    , y=80)
 
 
@@ -117,7 +113,7 @@ def limparestacoes():
 btn_estacoes = Button(app, bd=2, text="Deletar Estação", command=delestacao)
 btn_estacoes.place(width=100
                    , height=25
-                   , x=200
+                   , x=325
                    , y=260)
 
 
@@ -126,7 +122,7 @@ btn_estacoes.place(width=100
 btn_estacoes = Button(app, text="Limpar Tudo", command=limparestacoes)
 btn_estacoes.place(width=100
                    , height=25
-                   , x=200
+                   , x=325
                    , y=290)
 
 # cria o QRCode
@@ -224,7 +220,7 @@ def executar():
             app.update()
 
 
-        messagebox.showinfo(title="Iteração", message=f"Total de arquivos gerados: {iteracao}")
+        messagebox.showinfo(title="Concluido", message=f"Total de arquivos gerados: {iteracao}")
         # messagebox.showinfo(title="Informação", message=f"Salvo em: {local_arquivo_salvo}")
 
     else:
@@ -237,7 +233,7 @@ btn_executar = Button(app, bd=2, text="Executar", font=('arial', 18), command=ex
 
 btn_executar.place(width=150
                    , height=40
-                   , x=175
+                   , x=300
                    , y=320)
 
 varBarra=DoubleVar()
@@ -246,7 +242,7 @@ varBarra.set(0)
 progress = ttk.Progressbar(app, orient="horizontal", variable=varBarra, maximum=100)
 progress.place(width=150
                    , height=25
-                   , x=175
+                   , x=300
                    , y=370)
 
 app.mainloop()
